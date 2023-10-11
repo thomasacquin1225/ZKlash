@@ -1,5 +1,8 @@
 [package]
+name = "zklash"
 authors = [""]
-compiler_version = "0.1"
+compiler_version = "0.10.1"
+type = "bin"
 
 [dependencies]
+ecrecover = {tag = "v0.10.1", git = "https://github.com/colinnielsen/ecrecover-noir"}
