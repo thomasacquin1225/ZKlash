@@ -5,34 +5,23 @@ let response
 const wss = new WebSocketServer({ port: 8080 });
 const clients = new Map();
 const players = new Map();
-
+console.log("Server started on port 8080");
 wss.on('connection', function connection(ws) {
-    const player = {
-        playerId: "0xzxczxc", // init with the address of the user
-        voted: true,
-        latestRoundProof: "",
-        zcreds: 0,
-        xcreds: 0,
-        victories: 0,
-        losses: 0,
-        nfts: [],
-        isGhostMode: true,
-        latestTimestamp: new Date().getTime()
-    }
-    const player2 = {
-        playerId: "0xxxxxx3wqweqweqwe", // init with the address of the user
-        voted: false,
-        latestRoundProof: "",
-        zcreds: 0,
-        xcreds: 0,
-        victories: 0,
-        losses: 0,
-        nfts: [],
-        isGhostMode: true,
-        latestTimestamp: new Date().getTime()
-    }
-    ws.send(JSON.stringify([player, player2 ]));
-    clients.set(ws, player);
+
+    // const player2 = {
+    //     playerId: "0xxxxxx3wqweqweqwe", // init with the address of the user
+    //     voted: false,
+    //     latestRoundProof: "",
+    //     zcreds: 0,
+    //     xcreds: 0,
+    //     victories: 0,
+    //     losses: 0,
+    //     nfts: [],
+    //     isGhostMode: true,
+    //     latestTimestamp: new Date().getTime()
+    // }
+    // ws.send(JSON.stringify([player, player2 ]));
+    // 
     console.log("Got a connection!");
 
     //broadcast info to everyone
@@ -49,11 +38,27 @@ wss.on('connection', function connection(ws) {
         try {
             const parsedMessage = JSON.parse(message);
             if (parsedMessage.type === 'start') {
+                
+
                 const player = clients.get(ws);
-                if (!player) {
-                    players.set(parsedMessage.address, player);
+                if (!player && parsedMessage.playerId != "0") {
+                    const player = {
+                        playerId: parsedMessage.playerId, // init with the address of the user
+                        voted: true,
+                        latestRoundProof: "",
+                        zcreds: 0,
+                        xcreds: 0,
+                        victories: 0,
+                        losses: 0,
+                        nfts: [],
+                        isGhostMode: true,
+                        latestTimestamp: new Date().getTime()
+                    }
+                    console.log("Setting Players!", parsedMessage.playerId, player);
+                    players.set(parsedMessage.playerId, player);
+                    clients.set(ws, player);
                 }
-                player.latestTimestamp = new Date().getTime();
+                
                 publish();
             }
             if (parsedMessage.type === 'vote') {
@@ -77,9 +82,6 @@ wss.on('connection', function connection(ws) {
 });
 
 function publish() {
-
-    console.log('Published ', JSON.stringify([...players.values()]));
-
     [...clients.keys()].forEach((client) => {
         client.send(JSON.stringify([...players.values()]));
     });
