@@ -4,9 +4,16 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
+
+interface IVerifier {
+    function verify(bytes calldata _proof, bytes32[] calldata _publicInputs) external view returns (bool);
+}
+
+
 contract ZKlashMain is AccessControl {
     bytes32 public constant SETTER_ROLE = keccak256("SETTER_ROLE");
     uint256 public nextRoundNumber;
+    IVerifier public verifier;
 
     struct RoundState {
         uint256 roundNumber;
@@ -69,6 +76,10 @@ contract ZKlashMain is AccessControl {
                 roundHash
             )
         );
+    }
+
+    function setVerifier(address _verifier) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        verifier = IVerifier(_verifier);
     }
 
     function getRoundState(uint256 roundNumber) 
