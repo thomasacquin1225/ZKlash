@@ -8,7 +8,19 @@ const players = new Map();
 
 wss.on('connection', function connection(ws) {
     const player = {
-        playerId: "", // init with the address of the user
+        playerId: "0xzxczxc", // init with the address of the user
+        voted: true,
+        latestRoundProof: "",
+        zcreds: 0,
+        xcreds: 0,
+        victories: 0,
+        losses: 0,
+        nfts: [],
+        isGhostMode: true,
+        latestTimestamp: new Date().getTime()
+    }
+    const player2 = {
+        playerId: "0xxxxxx3wqweqweqwe", // init with the address of the user
         voted: false,
         latestRoundProof: "",
         zcreds: 0,
@@ -19,7 +31,7 @@ wss.on('connection', function connection(ws) {
         isGhostMode: true,
         latestTimestamp: new Date().getTime()
     }
-    ws.send("Help there");
+    ws.send(JSON.stringify([player, player2 ]));
     clients.set(ws, player);
     console.log("Got a connection!");
 
@@ -32,35 +44,35 @@ wss.on('connection', function connection(ws) {
     });
     ws.on('error', console.error);
     ws.on('message', function message(data) {
-        console.log('received: %s', data);
+        const message = data.toString('utf-8');
+        console.log('received:', message);
         try {
-        const message = JSON.parse(data);
-        if (message.type === 'start') {
-            const player = clients.get(ws);
-            if (!player) {
-                players.set(message.address, player);
+            const parsedMessage = JSON.parse(message);
+            if (parsedMessage.type === 'start') {
+                const player = clients.get(ws);
+                if (!player) {
+                    players.set(parsedMessage.address, player);
+                }
+                player.latestTimestamp = new Date().getTime();
+                publish();
             }
-            player.latestTimestamp = new Date().getTime();
-            publish();
+            if (parsedMessage.type === 'vote') {
+                const player = clients.get(ws);
+                // TODO: trigger the zkVote
+                // TODO: integrate next id for sybil protection
+                player.voted = true;
+                player.latestTimestamp = new Date().getTime();
+                publish();
+            }
+            if (parsedMessage.type === 'convertToPlayer') {
+                const player = clients.get(ws);
+                player.isGhostMode = false;
+                player.latestTimestamp = new Date().getTime();
+                publish();
+            }
+        } catch (e) {
+            console.error(e);
         }
-        if (message.type === 'vote') {
-            const player = clients.get(ws);
-            // TODO: trigger the zkVote
-            // TODO: integrate next id for sybil protection
-            player.voted = true;
-            player.latestTimestamp = new Date().getTime();
-            publish();
-        }
-        if (message.type === 'convertToPlayer') {
-            const player = clients.get(ws);
-            player.isGhostMode = false;
-            player.latestTimestamp = new Date().getTime();
-            publish();
-        }
-    }
-    catch (e) {
-        console.log(e); // error in the above string (in this case, yes)!       
-    }
     });
 });
 
