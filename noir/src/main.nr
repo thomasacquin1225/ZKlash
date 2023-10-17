@@ -1,7 +1,10 @@
 use dep::std;
 use dep::ecrecover;
 
-
+/*
+  We verify that the hashed_message which is publicly 
+  recreated is equivalent to hash created by the user previously
+*/
 fn main(
     nft_id: u8,
     round_number: u8,
