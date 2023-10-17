@@ -23,7 +23,19 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 | CASE DIFFERENT VOTE | GP    | 20    | 10    | GP (20)    | +X Credits    | ZKlash loses    | |
 |       | GV    | 0    | 2    | GV(2)    | +Y Credits, -Y Credits    | ZKlash wins    | |
 
-## Install
-## Test
+## Next steps
+[x] Basic Game theme and UI
+[x] Socket backend
+[x] Basic Noir prover
+[x] Basic state contracts
+[] Noir usage via JS and integrate with gamemaker
+[] Integrated contracts
+[] Game mechanics via payments  
+
+
+## Training Wheels
+1. We will use a backend in the beginning to signal for websockets and also to save state to the chain.
+2. The training wheels can come off by allowing it to be a safe module that can write the contract state via AA. The safe can be managed by the community using oSnap from UMA.
+
 
 
