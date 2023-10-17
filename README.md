@@ -24,13 +24,15 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 |       | GV    | 0    | 2    | GV(2)    | +Y Credits, -Y Credits    | ZKlash wins    | |
 
 ## Next steps
-[x] Basic Game theme and UI
-[x] Socket backend
-[x] Basic Noir prover
-[x] Basic state contracts
-[] Noir usage via JS and integrate with gamemaker
-[] Integrated contracts
-[] Game mechanics via payments  
+
+
+- [x] Basic Game theme and UI
+- [x] Socket backend
+- [x] Basic Noir prover
+- [x] Basic state contracts
+- [] Noir usage via JS and integrate with gamemaker
+- [] Integrated contracts
+- [] Game mechanics via payments  
 
 
 ## Training Wheels
