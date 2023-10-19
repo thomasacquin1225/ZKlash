@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.20;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Create2.sol";
+import "./interfaces/IERC6551Registry.sol";
 
 library ERC6551BytecodeLib {
     function getCreationCode(
