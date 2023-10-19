@@ -7,3 +7,8 @@
 [submodule "foundry/lib/openzeppelin-contracts"]
 	path = foundry/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "foundry/lib/erc6551"]
+	path = foundry/lib/erc6551
+	url = https://github.com/erc6551/reference
+[submodule "lib/erc6551"]
+	branch = v0.2.0
