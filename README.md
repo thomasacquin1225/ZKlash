@@ -35,6 +35,8 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 - [ ] Noir usage via JS and integrate with gamemaker
 - [ ] Integrated contracts
 - [ ] Game mechanics via payments  
+- [ ] Integrate 6551
+- [ ] Solmate integration
 
 
 ## Training Wheels

@@ -21,7 +21,7 @@ contract ZKlashERC6551Account is IERC165, IERC1271, IERC6551Account, IERC6551Exe
         uint256 operation
     ) external payable returns (bytes memory result) {
         require(_isValidSigner(msg.sender), "Invalid signer");
-        require(operation == 0, "Only call operations are supported");
+        require(operation <= 1, "Only read and write ops");
 
         ++state;
 
