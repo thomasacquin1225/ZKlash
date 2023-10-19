@@ -41,5 +41,7 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 1. We will use a backend in the beginning to signal for websockets and also to save state to the chain.
 2. The training wheels can come off by allowing it to be a safe module that can write the contract state via AA. The safe can be managed by the community using oSnap from UMA.
 
-
+## Usage of ERC6551
+We intend to use ERC6551 for the following purpose to make the game more easier - 
+<To fill after POC works>
 
