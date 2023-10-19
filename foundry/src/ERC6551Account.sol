@@ -26,7 +26,7 @@ contract ZKlashERC6551Account is IERC165, IERC1271, IERC6551Account, IERC6551Exe
         ++state;
 
         bool success;
-        (success, result) = to.call{value: value}(data);
+        (success, result) = to.call{value: value}(data);//convert this to a delegate call
 
         if (!success) {
             assembly {
