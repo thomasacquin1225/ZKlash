@@ -5,7 +5,7 @@ import "forge-std/Test.sol";
 import "forge-std/console2.sol";
 import "../src/ERC6551Account.sol";
 import "../src/LunarMissNFT.sol";
-import "../src/ERC6551Registry.sol";
+import "erc6551/ERC6551Registry.sol";
 
 contract ERC6551AccountTest is Test {
     ZKlashERC6551Account public erc6551Account;
@@ -28,19 +28,33 @@ contract ERC6551AccountTest is Test {
     }
 
     //test out the ideal flow for ERC6551
-    // function testCreateAccountForNFT() public {
-    //     address accountForBOBNFT = erc6551Registry.account(address(erc6551Account), 1, address(lunarMissNFT), 1, 1);
-    //     console.log("%s:%s", "foo", accountForBOBNFT);
-    //     erc6551Registry.createAccount(address(erc6551Account), 1, address(lunarMissNFT), 1, 1);
-    //     vm.startPrank(bob);
-    //     lunarMissNFT.safeMint(address(accountForBOBNFT));
-    //     vm.stopPrank();
-    //     vm.startPrank(address(0x13));//since token id 1 belongs to 0x13
+    function testCreateAccountForNFT() public {
+        vm.startPrank(bob);
+        lunarMissNFT.safeMint(vm.addr(1));
+        vm.stopPrank();
 
-    //     erc6551Account(accountForBOBNFT).execute(address(lunarMissNFT), 0, abi.encodeWithSelector(lunarMissNFT.t, address(0x12)), 1);
-    //     vm.stopPrank();
+        address account =
+            erc6551Registry.createAccount(address(erc6551Account), 0, block.chainid, address(lunarMissNFT), 0);
 
-    // }
+        assertTrue(account != address(0));
+        //copied over from the erc6551 test to check that our implementation also works
+        IERC6551Account accountInstance = IERC6551Account(payable(account));
+        IERC6551Executable executableAccountInstance = IERC6551Executable(account);
+
+        assertEq(
+            accountInstance.isValidSigner(vm.addr(1), ""), IERC6551Account.isValidSigner.selector
+        );
+
+        vm.deal(account, 1 ether);
+
+        vm.prank(vm.addr(1));
+        executableAccountInstance.execute(payable(vm.addr(2)), 0.5 ether, "", 0);
+
+        assertEq(account.balance, 0.5 ether);
+        assertEq(vm.addr(2).balance, 0.5 ether);
+        assertEq(accountInstance.state(), 1);
+
+    }
 
     //test out the flow of passing the NFT to the account and then to another user
 }
