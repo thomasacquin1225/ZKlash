@@ -65,11 +65,12 @@ wss.on('connection', function connection(ws) {
                     console.log("Setting Players!", parsedMessage.playerId, player);
                     
                     
-                    // _.throttle(sendETHToBurner(parsedMessage), 2000);
                     
                     players.set(parsedMessage.playerId, player);
                     clients.set(ws, player);
                     publish();
+                    _.throttle(sendETHToBurner(parsedMessage), 2000);
+
                 }
                 
             }
@@ -105,9 +106,9 @@ async function sendETHToBurner(player) {
     //     const wallet = new ethers.Wallet(process.env.privateKey, provider);   
     //     const transaction = {
     //         to: address,
-    //         value: ethers.utils.parseEther('0.0001')
+    //         value: ethers.utils.parseEther('0.0002')
     //     };
-    //     player.balance = 0.01;
+    //     player.balance = 0.001;
 
     //     const tx = await wallet.sendTransaction(transaction);
     //     console.log(tx);
