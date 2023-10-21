@@ -48,3 +48,7 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 We intend to use ERC6551 for the following purpose to make the game more easier - 
 <To fill after POC works>
 
+## Scroll
+
+Lunar Miss -> 0xd41c1f831fea7d1953fe8d66225143540d200dbd
+Use the above to mint NFT's on the fly by burner wallets, which in turn are converted to accounts via the ERC6551 accounts. Then neatly transfer the NFT to metamask signer at end of the game.
