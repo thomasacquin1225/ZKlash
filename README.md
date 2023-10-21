@@ -32,11 +32,12 @@ Zero knowledge proofs ensure that your moves and strategies remain hidden from p
 - [x] Socket backend
 - [x] Basic Noir prover
 - [x] Basic state contracts
-- [ ] Noir usage via JS and integrate with gamemaker
+- [x] Noir usage via JS 
+- [ ] Noir js integrate with gamemaker
 - [ ] Integrated contracts
 - [ ] Game mechanics via payments  
 - [ ] Integrate 6551
-- [ ] Solmate integration
+
 
 
 ## Training Wheels

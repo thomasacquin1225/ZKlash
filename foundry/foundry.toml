@@ -4,6 +4,10 @@ out = 'out'
 libs = ['lib']
 solc-version = "0.8.20"
 optimizer = true
-optimizer-runs = 10_000_000
+optimizer-runs = 200
 verbosity = 4
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+[etherscan]
+mainnet = { key = "${ETHERSCAN_MAINNET_KEY}" }
+scroll-sepolia = { key = "YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z", url = "https://sepolia.scrollscan.dev", chain = 534351 }
