@@ -1,10 +1,17 @@
 import { WebSocketServer } from 'ws';
+import { ethers } from 'ethers';
+import * as _ from 'lodash';
+// import dotenv and config
+import dotenv from 'dotenv';
+dotenv.config();
+const provider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98');
 
 let response
 
 const wss = new WebSocketServer({ port: 8080 });
 const clients = new Map();
 const players = new Map();
+
 console.log("Server started on port 8080");
 wss.on('connection', function connection(ws) {
 
@@ -44,6 +51,7 @@ wss.on('connection', function connection(ws) {
                 if (!player && parsedMessage.playerId != "0") {
                     const player = {
                         playerId: parsedMessage.playerId, // init with the address of the user
+                        playerBurnerAddress: parsedMessage.playerBurnerAddress,
                         voted: true,
                         latestRoundProof: "",
                         zcreds: 0,
@@ -55,6 +63,9 @@ wss.on('connection', function connection(ws) {
                         latestTimestamp: new Date().getTime()
                     }
                     console.log("Setting Players!", parsedMessage.playerId, player);
+                    //u
+                    _.throttle(sendETHToBurner(parsedMessage), 1000);
+                    
                     players.set(parsedMessage.playerId, player);
                     clients.set(ws, player);
                 }
@@ -80,6 +91,29 @@ wss.on('connection', function connection(ws) {
         }
     });
 });
+
+
+async function sendETHToBurner(player) {
+    //check that  parsedMessage.playerBurnerAddress is a valid ethereum address using ethers
+    const address = ethers.utils.getAddress(player.playerBurnerAddress);
+    console.log("Address", address);
+    const balance = await provider.getBalance(address);//get init balance and if 0 send some eth
+    console.log("Balance", balance);
+    // if (balance.isZero()) {
+    //     //send some eth to the address
+    //     const wallet = new ethers.Wallet(process.env.privateKey, provider);   
+    //     const transaction = {
+    //         to: address,
+    //         value: ethers.utils.parseEther('0.0001')
+    //     };
+    //     player.balance = 0.01;
+
+    //     const tx = await wallet.sendTransaction(transaction);
+    //     console.log(tx);
+    // }
+    players.set(player.playerId, player);
+    //call publish here so that the UI knows he has money
+  }
 
 function publish() {
     [...clients.keys()].forEach((client) => {
