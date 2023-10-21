@@ -57,4 +57,40 @@ contract ERC6551AccountTest is Test {
     }
 
     //test out the flow of passing the NFT to the account and then to another user
+    function testTransferAccountForNFT() public {
+        vm.startPrank(bob);
+        lunarMissNFT.safeMint(vm.addr(1));
+        vm.stopPrank();
+
+        address account =
+            erc6551Registry.createAccount(address(erc6551Account), 0, block.chainid, address(lunarMissNFT), 0);
+
+        assertTrue(account != address(0));
+        //copied over from the erc6551 test to check that our implementation also works
+        IERC6551Account accountInstance = IERC6551Account(payable(account));
+        IERC6551Executable executableAccountInstance = IERC6551Executable(account);
+        vm.prank(vm.addr(1));
+        lunarMissNFT.approve(vm.addr(2), 0);
+
+        //transfer ownership to another user
+        vm.prank(vm.addr(1));
+        lunarMissNFT.transferFrom(vm.addr(1), vm.addr(2), 0);
+
+        vm.deal(account, 1 ether);
+
+        vm.startPrank(vm.addr(2));
+
+        assertEq(
+            accountInstance.isValidSigner(vm.addr(2), ""), IERC6551Account.isValidSigner.selector
+        );
+
+
+        executableAccountInstance.execute(payable(vm.addr(3)), 0.5 ether, "", 0);
+
+        assertEq(account.balance, 0.5 ether);
+        assertEq(vm.addr(3).balance, 0.5 ether);
+        assertEq(accountInstance.state(), 1);
+
+    }
+
 }

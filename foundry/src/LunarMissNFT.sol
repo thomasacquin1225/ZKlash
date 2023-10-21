@@ -13,13 +13,13 @@ contract LunarMiss is ERC721, ERC721Enumerable, Ownable {
         Ownable(initialOwner)
     {}
 
-    function safeMint(address to) public onlyOwner {
+    // Allow minting of NFT by burner wallets, later can be via AA
+    function safeMint(address to) public {
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
     }
 
     // The following functions are overrides required by Solidity.
-
     function _update(address to, uint256 tokenId, address auth)
         internal
         override(ERC721, ERC721Enumerable)
