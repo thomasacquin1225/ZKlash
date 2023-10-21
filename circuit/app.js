@@ -2,7 +2,7 @@ import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import { Noir, generateWitness  } from '@noir-lang/noir_js';
 import circuit from './target/circuit.json'  assert { type: 'json' };
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function zkVote() {
     const backend = new BarretenbergBackend(circuit,8);
     const noir = new Noir(circuit, backend);
 
@@ -18,11 +18,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     display('logs', 'Verifying proof... ⌛');
     const verification = await noir.verifyFinalProof(proof);
     if (verification) display('logs', 'Verifying proof... ✅');
-  });
+  };
   
   function display(container, msg) {
-    const c = document.getElementById(container);
-    const p = document.createElement('p');
-    p.textContent = msg;
-    c.appendChild(p);
+    console.log(container,  "  -  ", msg); 
   }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    await zkVote()
+  });

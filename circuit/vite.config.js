@@ -34,5 +34,17 @@ export default defineConfig(({ command }) => {
     };
   }
 
-  return {};
+  return {
+    //add rollup options here
+      build: {
+        rollupOptions: {
+          output: {
+            format: 'umd',
+            dir: 'dist',
+            name: 'zkBundle'
+          }
+        },
+        cssCodeSplit: false
+      }
+    }
 });
