@@ -63,14 +63,15 @@ wss.on('connection', function connection(ws) {
                         latestTimestamp: new Date().getTime()
                     }
                     console.log("Setting Players!", parsedMessage.playerId, player);
-                    //u
-                    _.throttle(sendETHToBurner(parsedMessage), 1000);
+                    
+                    
+                    // _.throttle(sendETHToBurner(parsedMessage), 2000);
                     
                     players.set(parsedMessage.playerId, player);
                     clients.set(ws, player);
+                    publish();
                 }
                 
-                publish();
             }
             if (parsedMessage.type === 'vote') {
                 const player = clients.get(ws);
@@ -116,6 +117,7 @@ async function sendETHToBurner(player) {
   }
 
 function publish() {
+    console.log("Publishing", [...players.values()]);
     [...clients.keys()].forEach((client) => {
         client.send(JSON.stringify([...players.values()]));
     });
