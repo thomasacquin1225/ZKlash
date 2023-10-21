@@ -8,6 +8,7 @@ const wasmContentTypePlugin = {
   configureServer(server) {
     server.middlewares.use(async (req, res, next) => {
       if (req.url.endsWith('.wasm')) {
+        console.log('wasm', req.url)
         res.setHeader('Content-Type', 'application/wasm');
         const newPath = req.url.replace('deps', 'dist');
         const targetPath = path.join(__dirname, newPath);

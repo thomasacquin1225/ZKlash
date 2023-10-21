@@ -21,7 +21,7 @@ contract ZKlashERC6551Account is IERC165, IERC1271, IERC6551Account, IERC6551Exe
         returns (bytes memory result)
     {
         require(_isValidSigner(msg.sender), "Invalid signer");
-        require(operation <= 1, "Only rw operations are supported");
+        require(operation <= 1, "Only call operations are supported");
 
         ++state;
 
