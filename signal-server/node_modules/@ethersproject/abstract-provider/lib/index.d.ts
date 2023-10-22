@@ -17,6 +17,8 @@ export declare type TransactionRequest = {
     accessList?: AccessListish;
     maxPriorityFeePerGas?: BigNumberish;
     maxFeePerGas?: BigNumberish;
+    customData?: Record<string, any>;
+    ccipReadEnabled?: boolean;
 };
 export interface TransactionResponse extends Transaction {
     hash: string;
@@ -29,13 +31,14 @@ export interface TransactionResponse extends Transaction {
     wait: (confirmations?: number) => Promise<TransactionReceipt>;
 }
 export declare type BlockTag = string | number;
-interface _Block {
+export interface _Block {
     hash: string;
     parentHash: string;
     number: number;
     timestamp: number;
     nonce: string;
     difficulty: number;
+    _difficulty: BigNumber;
     gasLimit: BigNumber;
     gasUsed: BigNumber;
     miner: string;
@@ -79,6 +82,7 @@ export interface TransactionReceipt {
     status?: number;
 }
 export interface FeeData {
+    lastBaseFeePerGas: null | BigNumber;
     maxFeePerGas: null | BigNumber;
     maxPriorityFeePerGas: null | BigNumber;
     gasPrice: null | BigNumber;
@@ -133,8 +137,8 @@ export declare abstract class Provider implements OnceBlockable {
     abstract getTransaction(transactionHash: string): Promise<TransactionResponse>;
     abstract getTransactionReceipt(transactionHash: string): Promise<TransactionReceipt>;
     abstract getLogs(filter: Filter): Promise<Array<Log>>;
-    abstract resolveName(name: string | Promise<string>): Promise<string>;
-    abstract lookupAddress(address: string | Promise<string>): Promise<string>;
+    abstract resolveName(name: string | Promise<string>): Promise<null | string>;
+    abstract lookupAddress(address: string | Promise<string>): Promise<null | string>;
     abstract on(eventName: EventType, listener: Listener): Provider;
     abstract once(eventName: EventType, listener: Listener): Provider;
     abstract emit(eventName: EventType, ...args: Array<any>): boolean;
@@ -149,5 +153,4 @@ export declare abstract class Provider implements OnceBlockable {
     constructor();
     static isProvider(value: any): value is Provider;
 }
-export {};
 //# sourceMappingURL=index.d.ts.map

@@ -1,17 +1,19 @@
 import { WebSocketServer } from 'ws';
 import { ethers } from 'ethers';
 import * as _ from 'lodash';
-// import dotenv and config
+import { MerkleTree } from 'merkletreejs';
+import sha256  from 'crypto-js/sha256.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
-const provider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98');
+const provider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/');
 
 let response
 
 const wss = new WebSocketServer({ port: 8080 });
 const clients = new Map();
 const players = new Map();
-
+const voteProofs = [];
 console.log("Server started on port 8080");
 wss.on('connection', function connection(ws) {
 
@@ -75,17 +77,17 @@ wss.on('connection', function connection(ws) {
                 
             }
             if (parsedMessage.type === 'vote') {
-                const player = clients.get(ws);
                 // TODO: trigger the zkVote
-                // TODO: integrate next id for sybil protection
-                player.voted = true;
-                player.latestTimestamp = new Date().getTime();
-                publish();
-            }
-            if (parsedMessage.type === 'convertToPlayer') {
-                const player = clients.get(ws);
-                player.isGhostMode = false;
-                player.latestTimestamp = new Date().getTime();
+                // Here for each player add voteResultProof to the merkle tree
+                voteProofs.push(Object.values(parsedMessage.proof).join(''));
+                if(voteProofs.length === 2) {//wait for 2 people to vote
+                    //publish the proof to the smart contract
+                    const tree = new MerkleTree(voteProofs, sha256);
+                    const root = tree.getRoot().toString('hex');
+                    console.log("Merke Root to publish", root)
+                    //call a method to publish the root to the smart contract
+                    //emitRootForRound(root, _.round(new Date().getTime() / 1000));
+                }
                 publish();
             }
         } catch (e) {
@@ -94,6 +96,14 @@ wss.on('connection', function connection(ws) {
     });
 });
 
+async function emitRootForRound(root, round) {
+    //call a method to publish the root to the smart contract
+    const wallet = new ethers.Wallet(process.env.privateKey, provider); 
+    let abiObj = process.env.contractAbi;  
+    const contract = new ethers.Contract(process.env.contractAddress, abiObj.abi, wallet);
+    const tx = await contract.saveRoundResult(root, round);
+    console.log(tx);
+}
 
 async function sendETHToBurner(player) {
     //check that  parsedMessage.playerBurnerAddress is a valid ethereum address using ethers

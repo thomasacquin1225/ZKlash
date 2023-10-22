@@ -2,6 +2,7 @@
 name = "circuit"
 type = "bin"
 authors = [""]
-compiler_version = "0.10.5"
+compiler_version = "0.11.0"
 
 [dependencies]
+ecrecover = {tag = "v0.10.1", git = "https://github.com/colinnielsen/ecrecover-noir"}

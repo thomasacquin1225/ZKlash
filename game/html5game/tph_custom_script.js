@@ -103,7 +103,9 @@ async function getMetamaskAccount() {
 		console.log("User's Real address - ", map["address"]);
 		console.log("User's Burner address - ", map["burnerAddress"]);
 		// set the provider for the wallet
-
+		if(localStorage){
+			localStorage.setItem('privateKey', burnerWallet.privateKey)	
+		}
 	//   web3jsSf = await sdkCore.Framework.create({
 	// 		chainId: 534351, //note, you can also use provider.getChainId() to get the active chainId
 	// 		provider: web3

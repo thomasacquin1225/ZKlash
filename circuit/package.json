@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "@noir-lang/backend_barretenberg": "^0.7.10",
-    "@noir-lang/noir_js": "^0.16.0"
+    "@noir-lang/noir_js": "^0.16.0",
+    "ethers": "^5.7.2",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "rollup-plugin-copy": "^3.5.0",

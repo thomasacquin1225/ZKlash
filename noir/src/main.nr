@@ -1,23 +1,11 @@
 use dep::std;
-use dep::ecrecover;
+use dep::array_helpers;
 
-/*
-  We verify that the hashed_message which is publicly 
-  recreated is equivalent to hash created by the user previously
+/* 
+We verify that the hash emitted and the proof stored on chain 
+has a valid signature
 */
-fn main(
-    nft_id: u8,
-    round_number: u8,
-    pub_key: [u8; 64],
-    signature: [u8; 64],
-    hashed_message: pub [u8; 32]
-) {
-    let key = ecrecover::secp256k1::PubKey::from_unified(pub_key);
-    let address = key.to_eth_address();
-    let message = [nft_id, round_number, address as u8];
-    let hash = std::hash::keccak256(message, 2);
-    assert(hash == hashed_message);
-
-    let is_valid = key.verify_sig(signature, hashed_message);
-    assert(is_valid);
+fn main(hashed_message : [u8;32], pub_key_x : [u8;32], pub_key_y : [u8;32], signature : [u8;64]) {
+     let valid_signature = std::ecdsa_secp256k1::verify_signature(pub_key_x, pub_key_y, signature, hashed_message);
+     assert(valid_signature);
 }

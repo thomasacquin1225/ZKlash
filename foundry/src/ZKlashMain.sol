@@ -26,8 +26,7 @@ contract ZKlashMain is AccessControl {
 
     struct RoundResult {
         uint256 roundNumber;
-        uint256 winner_NFT_Id;
-        bytes32 roundHash;
+        bytes32 roundMerkleRootHash; // hash of the merkle root of the round, each leaf is a player's proof commitment
     }
 
     RoundState[] public roundStates;
@@ -62,9 +61,8 @@ contract ZKlashMain is AccessControl {
     }
 
     function saveRoundResult(
-        uint256 roundNumber,
-        uint256 winner_NFT_Id,
-        bytes32 roundHash
+        bytes32 roundMerkleRootHash,
+        uint256 roundNumber
     ) 
         external 
         onlyRole(SETTER_ROLE)
@@ -72,8 +70,7 @@ contract ZKlashMain is AccessControl {
         roundResults.push(
             RoundResult(
                 roundNumber,
-                winner_NFT_Id,
-                roundHash
+                roundMerkleRootHash
             )
         );
     }
