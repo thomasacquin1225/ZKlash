@@ -2,55 +2,58 @@
 web3 = "";
 let web3jsSf;
 let metaMaskSigner;
-let ARBO = "0xaa19610D44b7EF574FAeEcA5e1a77d4bb7d8b8C2";
 let userAddress = "";
+let burnerWallet;
 let oldData = {};
 let _gmlinMainRoom = false;
 
-(async function() {
-	const ws = await connectToServer();
-	ws.onmessage = (webSocketMessage) => {
-		const messageBody = JSON.parse(webSocketMessage.data);
-		console.log("messageBody -- ", messageBody, JSON.stringify(oldData) !== JSON.stringify(messageBody))
-		// GMS_API.send_async_event_social("test");
 
-		if((JSON.stringify(oldData) !== JSON.stringify(messageBody)) && _gmlinMainRoom) {
-			setGardener(messageBody);
-			oldData = messageBody;
-		}
-			
-};
-async function connectToServer() {
-	const ws = new WebSocket('ws://localhost:8080');
-	// const ws = new WebSocket(`wss://savearbo.xyz/ws`);
 
-	return new Promise((resolve, reject) => {
-			const timer = setInterval(() => {
-					if(ws.readyState === 1) {
-							clearInterval(timer)
-							resolve(ws);
-					}
-			}, 10);
-	});
-}
-})();
-
-function setGardener(data) {
+async function setVote(voteParam) {
 	var map = {};
-	map["id"] = "watered";
-	map["data"] = "";
-	if(localforage){
-		localforage.setItem('arbo_lf', data).then(function (value) {
-		// Do other things once the value has been saved.
-		// console.log(value, "set in db",JSON.parse(data).data.arbos[0]);
-		map["data"] = JSON.stringify(data.data);
+	map["id"] = "voted";
+	map["voteParam"] = "";
+	// const scrollQnProvider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/');
 
-		GMS_API.send_async_event_social(map);
+	// const contractAddress = '0xd41c1f831fea7d1953fe8d66225143540d200dbd';
+	// const signer = new ethers.Wallet(burnerWallet.privateKey, scrollQnProvider);
+	// ERC721 ABI
+	const abi = [
+	// ERC721
+	{
+		"inputs": [
+		  {
+			"internalType": "address",
+			"name": "to",
+			"type": "address"
+		  }
+		],
+		"name": "safeMint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	  }
+	];
+	// const contract = new ethers.Contract(contractAddress, abi, signer);
+	console.log(`Minting NFT ... ${burnerWallet}`);
+	console.log(`Voting for ... ${voteParam}`);
 
-		}).catch(function(err) {
-		// This code runs if there were any errors
-		console.log(err);
-		});
+	
+
+	// const tx = await contract.safeMint(burnerWallet.address);
+	if(localStorage){
+		localStorage.setItem('vote', voteParam)
+		// .then(function (value) {
+		// // Do other things once the value has been saved.
+		// // console.log(value, "set in db",JSON.parse(data).data.arbos[0]);
+		// // map["data"] = JSON.stringify(data.data);
+
+		// GMS_API.send_async_event_social(map);
+
+		// }).catch(function(err) {
+		// // This code runs if there were any errors
+		// console.log(err);
+		// });
 	}
 
 }
@@ -87,22 +90,31 @@ async function getMetamaskAccount() {
 	var map = {};
 	map["id"] = "getWalletAddress";
 	map["address"]="0";
+	map["burnerAddress"]="0";
 
 	try {
 	  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
 		map["address"] = accounts[0];
 		userAddress = accounts[0];
 		web3 = new Web3(window.ethereum);
-		console.log(web3);
-		console.log(map["address"]);
-
-	  web3jsSf = await sdkCore.Framework.create({
-			chainId: 5, //note, you can also use provider.getChainId() to get the active chainId
-			provider: web3
-		});
+		// console.log(web3);
+		burnerWallet = ethers.Wallet.createRandom();
+		map["burnerAddress"] = burnerWallet.address;
+		console.log("User's Real address - ", map["address"]);
+		console.log("User's Burner address - ", map["burnerAddress"]);
+		// set the provider for the wallet
+		if(localStorage){
+			localStorage.setItem('privateKey', burnerWallet.privateKey)	
+		}
+	//   web3jsSf = await sdkCore.Framework.create({
+	// 		chainId: 534351, //note, you can also use provider.getChainId() to get the active chainId
+	// 		provider: web3
+	// 	});
+		
 		const metamaskProvider = new ethers.providers.Web3Provider(window.ethereum);
-	  metaMaskSigner = web3jsSf.createSigner({ web3Provider: metamaskProvider });
-		console.log(web3jsSf, metaMaskSigner);
+	//	scrollQnProvider
+	//   metaMaskSigner = web3jsSf.createSigner({ web3Provider: metamaskProvider });
+	// 	console.log(web3jsSf, metaMaskSigner);
 
 		
 	} catch(error) {
