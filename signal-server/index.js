@@ -41,7 +41,7 @@ wss.on('connection', function connection(ws) {
 
     });
     ws.on('error', console.error);
-    ws.on('message', function message(data) {
+    ws.on('message', async function message(data) {
         const message = data.toString('utf-8');
         console.log('received:', message);
         try {
@@ -86,7 +86,7 @@ wss.on('connection', function connection(ws) {
                     const root = tree.getRoot().toString('hex');
                     console.log("Merke Root to publish", root)
                     //call a method to publish the root to the smart contract
-                    //emitRootForRound(root, _.round(new Date().getTime() / 1000));
+                    await emitRootForRound('0x'+root, _.round(new Date().getTime() / 1000));
                 }
                 publish();
             }
@@ -99,11 +99,35 @@ wss.on('connection', function connection(ws) {
 async function emitRootForRound(root, round) {
     //call a method to publish the root to the smart contract
     const wallet = new ethers.Wallet(process.env.privateKey, provider); 
-    let abiObj = process.env.contractAbi;  
-    const contract = new ethers.Contract(process.env.contractAddress, abiObj.abi, wallet);
+    let abiObj = [{
+        "inputs": [
+          {
+            "internalType": "bytes32",
+            "name": "roundMerkleRootHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "roundNumber",
+            "type": "uint256"
+          }
+        ],
+        "name": "saveRoundResult",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }];  
+
+    const contract = new ethers.Contract(process.env.contractAddress, abiObj, wallet);
     const tx = await contract.saveRoundResult(root, round);
     console.log(tx);
 }
+
+// async function main(){
+//     await emitRootForRound("0x7892a8387c952fc94c95f6516417b36c189f8b7a4cc7453ee41f357c961fe950", 0);
+// };
+
+// main();
 
 async function sendETHToBurner(player) {
     //check that  parsedMessage.playerBurnerAddress is a valid ethereum address using ethers

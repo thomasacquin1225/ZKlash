@@ -67,12 +67,21 @@ ERC6551 Wallet and ACCOUNT contract -
 
 Use the above to mint NFT's on the fly by burner wallets, which in turn are converted to accounts via the ERC6551 accounts. Then neatly transfer the NFT to metamask signer at end of the game.
 
+Sample Transactions to show the flow - 
+1. 
 
-ZKlashContract - 
+ZKlashContract - 0xad525a40760ccf35c3768008964f3668dd278e5c
 
-forge create --rpc-url https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/  --private-key  src/LunarMissNFT.sol:LunarMiss --constructor-args "0xd182167e45625a3D57583EC15D870274e63B8A2c" --verifier-url https://sepolia.scrollscan.dev/api --verify --verifier etherscan --legacy --etherscan-api-key YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z
+forge create --rpc-url https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/  --private-key   src/ZKlashMain.sol:ZKlashMain --constructor-args "0xd182167e45625a3D57583EC15D870274e63B8A2c" --verifier-url https://sepolia.scrollscan.dev/api --verify --verifier etherscan --legacy --etherscan-api-key YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z
+
+forge create --rpc-url https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/  --private-key   src/ERC6551Account.sol:ZKlashERC6551Account --constructor-args "0xd182167e45625a3D57583EC15D870274e63B8A2c" --verifier-url https://sepolia.scrollscan.dev/api --verify --verifier etherscan --legacy --etherscan-api-key YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z
+
+
 forge verify-contract 0xd41C1F831FEa7d1953fE8d66225143540d200DBd src/LunarMissNFT.sol:LunarMiss --chain-id 534351 --verifier-url https://sepolia-blockscout.scroll.io/api\? --verifier blockscout
-  
+forge verify-contract 0xad525a40760ccf35c3768008964f3668dd278e5c src/ZKlashMain.sol:ZKlashMain --chain-id 534351 --verifier-url https://sepolia-blockscout.scroll.io/api\? --verifier blockscout
+
+The following verification failed - 
+
 forge verify-contract \
 --watch \
 --num-of-optimizations 200 \    --constructor-args  $(cast abi-encode "constructor(address)" 0xd182167e45625a3D57583EC15D870274e63B8A2c) \  
@@ -82,3 +91,14 @@ forge verify-contract \
 0xd41C1F831FEa7d1953fE8d66225143540d200DBd \
 LunarMiss \
 YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z
+
+forge verify-contract \
+    --num-of-optimizations 200 \
+    --watch \
+    --constructor-args  $(cast abi-encode "constructor(uint256)" 100000) \
+    --verifier etherscan \
+    --verifier-url https://api-sepolia.scrollscan.dev/api \
+    --compiler-version v0.8.20+commit.a1b79de6 \
+    0xad525a40760ccf35c3768008964f3668dd278e5c \
+    ZKlashMain \
+    YHKTBJTDRDXGQ55HPGK69Z83PDZY24HE2Z
