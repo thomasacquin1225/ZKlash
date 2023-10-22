@@ -23,7 +23,18 @@ async function zkVote() {
   function display(container, msg) {
     console.log(container,  "  -  ", msg); 
   }
+  function checkLocalStorage() {
+    setInterval(async () => {
+      const vote = parseInt(localStorage.getItem('vote'));
+      
+      if (vote) {
+        await zkVote();
+        //delete the item from localstorage
+        localStorage.removeItem('vote');  
+      }
+    }, 3000);
+  }
 
   document.addEventListener('DOMContentLoaded', async () => {
-    await zkVote()
+    checkLocalStorage();
   });

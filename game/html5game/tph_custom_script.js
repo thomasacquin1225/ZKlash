@@ -13,10 +13,10 @@ async function setVote(voteParam) {
 	var map = {};
 	map["id"] = "voted";
 	map["voteParam"] = "";
-	const scrollQnProvider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/');
+	// const scrollQnProvider = new ethers.providers.JsonRpcProvider('https://restless-summer-dew.scroll-testnet.quiknode.pro/c82a1fa2f396655a8a6e5b27764e17f5dc909b98/');
 
-	const contractAddress = '0xd41c1f831fea7d1953fe8d66225143540d200dbd';
-	const signer = new ethers.Wallet(burnerWallet.privateKey, scrollQnProvider);
+	// const contractAddress = '0xd41c1f831fea7d1953fe8d66225143540d200dbd';
+	// const signer = new ethers.Wallet(burnerWallet.privateKey, scrollQnProvider);
 	// ERC721 ABI
 	const abi = [
 	// ERC721
@@ -34,25 +34,26 @@ async function setVote(voteParam) {
 		"type": "function"
 	  }
 	];
-	const contract = new ethers.Contract(contractAddress, abi, signer);
+	// const contract = new ethers.Contract(contractAddress, abi, signer);
 	console.log(`Minting NFT ... ${burnerWallet}`);
 	console.log(`Voting for ... ${voteParam}`);
 
-	await zkBundle.zkVote();
+	
 
-	const tx = await contract.safeMint(burnerWallet.address);
-	if(localforage){
-		localforage.setItem('voted', voteParam).then(function (value) {
-		// Do other things once the value has been saved.
-		// console.log(value, "set in db",JSON.parse(data).data.arbos[0]);
-		// map["data"] = JSON.stringify(data.data);
+	// const tx = await contract.safeMint(burnerWallet.address);
+	if(localStorage){
+		localStorage.setItem('vote', voteParam)
+		// .then(function (value) {
+		// // Do other things once the value has been saved.
+		// // console.log(value, "set in db",JSON.parse(data).data.arbos[0]);
+		// // map["data"] = JSON.stringify(data.data);
 
-		GMS_API.send_async_event_social(map);
+		// GMS_API.send_async_event_social(map);
 
-		}).catch(function(err) {
-		// This code runs if there were any errors
-		console.log(err);
-		});
+		// }).catch(function(err) {
+		// // This code runs if there were any errors
+		// console.log(err);
+		// });
 	}
 
 }
